@@ -5,6 +5,7 @@ import { useStudent } from "@/api/hooks/useStudent";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/lib";
 import { setEditingUser } from "@/lib/features/updatingSlice";
+import { useNavigate } from "react-router-dom";
 
 export interface IUser{
   id: string
@@ -19,9 +20,13 @@ interface Props {
 }
 
 const StudentView:FC<Props> = ({ data }) => {
+  const navigate = useNavigate()
   const { deleteMutation } = useStudent()
   const dispatch = useDispatch<AppDispatch>()
-
+  const handleUpdate = (user:IUser):void => {
+   dispatch(setEditingUser(user))
+   navigate('/create-student')
+  }
   return (
     <Box>
       <div className="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-1 gap-3">
@@ -36,7 +41,7 @@ const StudentView:FC<Props> = ({ data }) => {
               <button onClick={() => deleteMutation.mutate(user.id)} className="cursor-pointer">
                 <Trash className="size-5 text-red-500"/>
               </button>
-              <button onClick={() => dispatch(setEditingUser(user))} className="cursor-pointer">
+              <button onClick={() => handleUpdate(user)} className="cursor-pointer">
                 <SquarePen className="size-5 text-green-600" />
               </button>
             </div>

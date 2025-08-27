@@ -31,8 +31,8 @@ export const useStudent = () => {
     })
 
     const updateMutation = useMutation({
-        mutationFn: ({ id, user }: { id: string; user: IState }) => api.put(`/user/${id}`, user),
-  onSuccess: () => {
+    mutationFn: ({ id, user }: { id: string; user: IState }) => api.put(`/user/${id}`, user),
+    onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ["users"] })
   },
     })

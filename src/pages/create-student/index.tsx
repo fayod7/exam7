@@ -2,14 +2,15 @@ import { useStudent } from "@/api/hooks/useStudent";
 import Box from "@/components/ui/Box";
 import Title from "@/components/ui/Title";
 import type { RootState } from "@/lib";
+import { setEditingUser } from "@/lib/features/updatingSlice";
 import { REGIONS } from "@/static";
 import { memo, useEffect, useState, type ChangeEvent, type FormEvent } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const CreateStudent = () => {
   const { createMutation , updateMutation} = useStudent()
     const editingUser = useSelector((state: RootState) => state.updatingReducer.editingUser)
-
+  const dispatch = useDispatch()
 useEffect(() => {
   if (editingUser) setFormData(editingUser)
 }, [editingUser])
@@ -31,7 +32,14 @@ useEffect(() => {
     e.preventDefault()
     console.log(formData);
     if (editingUser) {
-    updateMutation.mutate({ id: editingUser.id, user: formData })
+    updateMutation.mutate({ id: editingUser.id, user: formData },
+      {
+      onSuccess: () => {
+        setFormData(initialState)
+      dispatch(setEditingUser(null))
+      }
+    }
+    )
   } else {
     createMutation.mutate(formData, {
       onSuccess: () => setFormData(initialState),
